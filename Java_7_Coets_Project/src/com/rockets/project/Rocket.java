@@ -1,22 +1,39 @@
 package com.rockets.project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.rockets.exceptions.RocketCodeException;
 
 public class Rocket {
 	
 	private String code;
-	private int thrustersNumber;
+	private List<Integer> thrustersMaxPower;
 	
-	public Rocket() throws Exception{
-		this.code="xxxxxxxx";
-		this.thrustersNumber=0;
+	public Rocket(String code) throws Exception{
+		this.code = code;
+		this.thrustersMaxPower = new ArrayList<>();
+		
 		checkCode();
 	}
 	
 	public Rocket(String code, int thrustersNumber) throws Exception{
 		this.code=code;
-		this.thrustersNumber=thrustersNumber;
+		this.thrustersMaxPower = new ArrayList<>(thrustersNumber);
+		
+		for(int i=0;i<this.thrustersMaxPower.size();i++) {
+			this.thrustersMaxPower.set(i, 0);
+		}
+		
 		checkCode();
+	}
+	
+	public int getThrustersNumber() {
+		return this.thrustersMaxPower.size();
+	}
+	
+	public void addThrusterMaxPower(int maxPower) {
+		this.thrustersMaxPower.add(maxPower);
 	}
 	
 	public void checkCode() throws Exception {
@@ -24,7 +41,15 @@ public class Rocket {
 	}
 		
 	public String toString() {
-		return "Codi: "+this.code+" , Número de propulsors: "+this.thrustersNumber;
+		String output = this.code+": ";
+		
+		for(Integer i: this.thrustersMaxPower) {
+			output+=i+",";
+		}
+		
+		output+= "(" + this.getThrustersNumber() +" propulsors)";
+		
+		return output;
 	}
 	
 }
