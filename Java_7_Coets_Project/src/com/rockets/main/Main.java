@@ -1,20 +1,27 @@
 package com.rockets.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.rockets.project.Rocket;
+import com.rockets.ui.InputManager;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		fase2();
+		List<Rocket> rockets = initRockets();
 		
+		InputManager ui = new InputManager(rockets);
+		
+		ui.showMenu();
+		
+		ui.close();
 	}
 
-	public static void fase2() {
+	public static List<Rocket> initRockets() {
 		
-		System.out.println("------");
-		System.out.println("FASE 2");
-		System.out.println("------");
+		List<Rocket> list = new ArrayList<Rocket>();
 		
 		try {
 			Rocket rocket1 = new Rocket("32WESSDS");
@@ -31,12 +38,17 @@ public class Main {
 			rocket2.addThrusterMaxPower(30);
 			rocket2.addThrusterMaxPower(10);
 			
-			System.out.println("COET 1: "+rocket1.toString());
-			System.out.println("COET 2: "+rocket2.toString());
+			list.add(rocket1);
+			list.add(rocket2);
+			
+			//System.out.println("COET 1: "+rocket1.toString());
+			//System.out.println("COET 2: "+rocket2.toString());
 			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+		
+		return list;
 		
 	}
 	
