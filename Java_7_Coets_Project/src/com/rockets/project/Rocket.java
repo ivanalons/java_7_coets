@@ -33,8 +33,13 @@ public class Rocket {
 		return this.thrustersList.size();
 	}
 	
+	// Afegeix un nou propulsor a l'objecte coet amb maxima potencia indicada per parametre
 	public void addThrusterMaxPower(int maxPower) {
-		Thruster thruster = new Thruster(maxPower);
+		
+		// Se li passa per parametre al constructor del propulsor Thruster :
+		// this.thrustersList.size() : la seva posicio dins de la llista "thrustersList" del coet
+		// per a saber quin és el número de propulsor d'entre tots els coets
+		Thruster thruster = new Thruster(maxPower,this.thrustersList.size());
 		this.thrustersList.add(thruster);
 	}
 	

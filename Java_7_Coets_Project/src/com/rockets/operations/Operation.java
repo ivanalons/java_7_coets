@@ -1,13 +1,15 @@
 package com.rockets.operations;
 
+import com.rockets.project.Rocket;
 import com.rockets.project.Thruster;
 
 public class Operation {
 
-	Thruster thruster;
-	int objectivePower;
+	Rocket rocket;      //Coet al qual se li aplicarà una operació
+	Thruster thruster;  //Propulsor al qual se li aplicarà una operació
+	int objectivePower; //Potencia objectiu de la operació accelerar o frenar
 	
-	Operation(Thruster t){
+	public Operation(Thruster t){
 		this.thruster=t;
 	}
 
@@ -23,5 +25,12 @@ public class Operation {
 		this.objectivePower = objectivePower;
 	}
 	
+	public Rocket getRocket() {
+		return this.rocket;
+	}
+	
+	public void setRocket(Rocket rocket) {
+		this.rocket = rocket;
+	}
 	
 }
