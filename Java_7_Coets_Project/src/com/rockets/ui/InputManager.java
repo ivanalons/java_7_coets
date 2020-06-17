@@ -52,7 +52,11 @@ public class InputManager {
 			
 			System.out.println("-----------------------------------");
 			
-			if (this.operationsList.size()>0) this.showScheduledOperations();
+			if (this.operationsList.size()>0) {
+				this.showScheduledOperations();
+			}else {
+				System.out.println("Encara no hi ha cap operació planificada!");
+			}
 			
 			System.out.println("-----------------------------------");
 
