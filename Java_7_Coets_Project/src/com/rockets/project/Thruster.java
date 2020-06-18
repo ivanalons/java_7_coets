@@ -1,5 +1,6 @@
 package com.rockets.project;
 
+// Encapsula un objecte que representa un propulsor
 public class Thruster {
 
 	private int maxPower;

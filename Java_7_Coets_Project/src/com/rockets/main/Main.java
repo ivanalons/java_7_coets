@@ -10,15 +10,17 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		List<Rocket> rockets = initRockets();
+		List<Rocket> rockets = initRockets(); //Llista amb els coets inicialitzats segons l'enunciat de l'exercici
 		
-		InputManager ui = new InputManager(rockets);
+		InputManager ui = new InputManager(rockets); //Encapsula la gestió d'entrada de dades
 		
-		ui.showMenu();
+		ui.showMenu(); 		//Es mostra el menu principal
 		
-		ui.close();
+		ui.close(); //Es tanca l'objecte Scanner de gestio d'entrada de dades que encapsula la classe InputManager
 	}
 
+	// S'inicialitzen els coets sense demanar les dades per consola tal i com s'indica a l'enunciat 
+	// i es retornen en una llista
 	public static List<Rocket> initRockets() {
 		
 		List<Rocket> list = new ArrayList<Rocket>();

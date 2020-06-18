@@ -80,7 +80,7 @@ public class InputCommons {
 	
 	/**
 	 *  Es fa una pausa per consola per a poder veure els últims missatges fins que l'usuari
-	 *  premi una tecla per consola
+	 *  premi la tecla ENTER per consola
 	 *  
 	 */
 	

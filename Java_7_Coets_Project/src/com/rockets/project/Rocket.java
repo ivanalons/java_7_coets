@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.rockets.exceptions.RocketCodeException;
 
+// Encapsula un objecte que representa un coet
 public class Rocket {
 	
 	private String code;
@@ -38,7 +39,7 @@ public class Rocket {
 		
 		// Se li passa per parametre al constructor del propulsor Thruster :
 		// this.thrustersList.size() : la seva posicio dins de la llista "thrustersList" del coet
-		// per a saber quin és el número de propulsor d'entre tots els coets
+		// per a saber quin és el número de propulsor d'entre tots els propulsors del coet Rocket
 		Thruster thruster = new Thruster(maxPower,this.thrustersList.size());
 		this.thrustersList.add(thruster);
 	}

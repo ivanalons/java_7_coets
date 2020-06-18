@@ -300,18 +300,27 @@ public class InputManager {
 	}
 	
 	public void executeOperations() {
-		OperationsLauncher launcher = new OperationsLauncher(this.operationsList);
-		launcher.execute();
-		while (launcher.areAllOperationsFinished()==false) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		
-		this.operationsList.removeAll(this.operationsList);
-		System.out.println("Totes les operacions planificades s'han executat correctament");
+		OperationsLauncher launcher = new OperationsLauncher(this.operationsList);
+		
+		try {
+			launcher.execute();
+			
+			while (launcher.areAllOperationsFinished()==false) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			this.operationsList.removeAll(this.operationsList);
+			
+			System.out.println("Totes les operacions planificades s'han executat correctament");
+			
+		}finally {
+			launcher.stopAllThreads();
+		}
 		
 		commons.pause();
 	}
