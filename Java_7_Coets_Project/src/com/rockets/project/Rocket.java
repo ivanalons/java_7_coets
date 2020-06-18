@@ -43,42 +43,24 @@ public class Rocket {
 		this.thrustersList.add(thruster);
 	}
 	
+	//Els threads ja saben quin propulsor del coet i potencia objectiu han d'assolir 
+	//per tant s'accelera o frena cada propulsor independentment, no cal cridar als metodes de la
+	//classe Rocket, es criden als metodes de la classe propulsor Thruster directament
+	
+	/*
 	public void brakeThruster(int thrusterNumber , int objectivePower) {
 		
 		Thruster t = this.thrustersList.get(thrusterNumber);
+		t.brake();
 		
-		if (t.getCurrentPower() < objectivePower) { //no es pot frenar
-			System.out.println("No es pot frenar el propulsor" + (thrusterNumber+1) + " del coet "
-		    + this.code + " perque (potencia objectiu > potencia actual)");
-			return;
-		}else if(objectivePower < 0) { //potencia objectiu ha de ser mes gran que zero
-			System.out.println("No es pot frenar el propulsor" + (thrusterNumber+1) + " del coet "
-				    + this.code + " perque (potencia objectiu < zero)");
-			return;
-		}
-		
-		// codi
-		System.out.println("FRENA propulsor "+ (thrusterNumber+1) + " del coet "+this.code);
 	}
 	
 	public void accelerateThruster(int thrusterNumber , int objectivePower) {
 		
 		Thruster t = this.thrustersList.get(thrusterNumber);
-		
-		if (t.getCurrentPower() > objectivePower) { //no es pot accelerar
-			System.out.println("No es pot accelerar el propulsor" + (thrusterNumber+1) + " del coet "
-				    + this.code + " perque (potencia objectiu < potencia actual)");
-			return;
-		}else if(objectivePower > t.getMaxPower()) { //la potencia objectiu no pot superar la potencia maxima
-			System.out.println("No es pot accelerar el propulsor" + (thrusterNumber+1) + " del coet "
-				    + this.code + " perque (potencia objectiu > potencia maxima)");
-			return;
-		}
-		
-		// codi
-		System.out.println("ACCELERA propulsor "+ (thrusterNumber+1) + " del coet "+this.code);
+		t.accelerate();
 
-	}
+	}*/
 			
 	public String toString() {
 		String output = "Coet "+this.code+": ";

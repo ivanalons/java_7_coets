@@ -16,8 +16,12 @@ public class Thruster {
 		return currentPower;
 	}
 
-	public void setCurrentPower(int currentPower) {
-		this.currentPower = currentPower;
+	public void accelerate() {
+		this.currentPower++;
+	}
+	
+	public void brake() {
+		this.currentPower--;
 	}
 
 	public int getMaxPower() {

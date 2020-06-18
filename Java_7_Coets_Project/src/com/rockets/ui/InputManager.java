@@ -9,6 +9,7 @@ import com.rockets.operations.Brake;
 import com.rockets.operations.Operation;
 import com.rockets.project.Rocket;
 import com.rockets.project.Thruster;
+import com.rockets.threads.OperationsLauncher;
 
 public class InputManager {
 
@@ -67,6 +68,10 @@ public class InputManager {
 				this.showRocketsState();
 			}else if(option == 2) {
 				this.scheduleOperation();
+			}else if(option == 3) {
+				this.executeOperations();
+			}else if(option == 4) {
+				this.removeAllOperations();
 			}
 			
 			
@@ -204,12 +209,12 @@ public class InputManager {
 	 */
 	private void chooseObjectivePower(Operation op) {
 	
-		boolean correctOperation=false, correctAccelerate, correctBrake;
+		//boolean correctOperation=false, correctAccelerate, correctBrake;
 		Thruster thruster = op.getThruster();
 		int operation = 0;
 		int objectivePower = 0;
 		
-		while(correctOperation==false) {
+		//while(correctOperation==false) {
 			
 			if(op instanceof Accelerate) {
 				operation=1;
@@ -222,12 +227,12 @@ public class InputManager {
 			} else if (operation==2){
 				objectivePower = commons.askInt("Introdueix la potencia objectiu:", 0, thruster.getCurrentPower());
 			}
-			
+		/*	
 			correctAccelerate = (objectivePower>=thruster.getCurrentPower() && objectivePower<=thruster.getMaxPower());
 			correctBrake = (objectivePower<=thruster.getCurrentPower() && objectivePower>=0);
 			
 			correctOperation = (operation==1 && correctAccelerate) || (operation==2 && correctBrake);
-		}
+		}*/
 		
 		op.setObjectivePower(objectivePower);
 	}
@@ -288,4 +293,26 @@ public class InputManager {
 		return false;
 	}
 	
+	public void removeAllOperations() {
+		this.operationsList.removeAll(this.operationsList);
+		System.out.println("Totes les operacions planificades s'han eliminat correctament.");
+		commons.pause();
+	}
+	
+	public void executeOperations() {
+		OperationsLauncher launcher = new OperationsLauncher(this.operationsList);
+		launcher.execute();
+		while (launcher.areAllOperationsFinished()==false) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		this.operationsList.removeAll(this.operationsList);
+		System.out.println("Totes les operacions planificades s'han executat correctament");
+		
+		commons.pause();
+	}
 }
