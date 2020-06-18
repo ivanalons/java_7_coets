@@ -14,10 +14,11 @@ import com.rockets.threads.OperationsLauncher;
 public class InputManager {
 
 	Scanner input; //objecte per a capturar entrada de dades per consola
-	InputCommons commons; //objecte que encapsula la operativa d'entrada de dades per consola
+	InputCommons commons; //objecte que encapsula la operativa basica d'entrada de dades per consola
 	
 	List<Rocket> rocketsList; //llista de coets ja inicialitzada al parametre del constructor
-	List<Operation> operationsList; //llista d'operacions a realitzar concurrentment
+	List<Operation> operationsList; // llista d'operacions pendents a realitzar concurrentment 
+									// quan l'usuari ho demani
 	
 	public InputManager(List<Rocket> rocketsList){
 		
@@ -32,7 +33,9 @@ public class InputManager {
 		this.input.close();
 	}
 	
-	//mostra menu per pantalla
+	/**
+	 *  Mostra menu per pantalla i espera per consola la selecció d'opció per part de l'usuari
+	 */
 	public void showMenu() {
 		
 		boolean exit = false;
@@ -102,7 +105,7 @@ public class InputManager {
 	
 	/**
 	 * Crea una operació que contindrà el coet, el propulsor, el tipus d'operació (accelerar o frenar)
-	 * , així com la potencia objectiu que el thread corresponent haurà d'arribar
+	 * , així com la potencia objectiu, a la que el thread corresponent haurà d'arribar
 	 */
 	public void scheduleOperation() {
 		
@@ -112,11 +115,15 @@ public class InputManager {
 
 		Rocket rocket = this.chooseRocket(); //selecciona coet per consola
 		Thruster thruster = this.chooseThruster(rocket); //selecciona propulsor per consola
-		Operation op = this.chooseOperation(thruster); //selecciona tipus d'operació per consola
-		op.setRocket(rocket); //s'afegeix el coet Rocket a la operació per a poder saber el codi del coet
+		Operation op = this.chooseOperation(thruster); //selecciona tipus d'operació per consola (ACCELERATE o BRAKE)
+		op.setRocket(rocket); // s'afegeix el coet Rocket a la operació per a poder saber el codi del coet
+							  // i que la operació pugui accedir a l'objecte coet Rocket sobre el qual haurà d'operar
 		this.chooseObjectivePower(op); //selecciona potència objectiu per consola
 		
-		if (this.conflictBetweenOperations(op)==false) {
+		//Si s'han planificat dues operacions per a un mateix propulsor d'un coet mostrar error per pantalla
+		//Si no hi ha conflicte d'operacions, s'afegeix la operació demanada per l'usuari a la llista
+		// "operationsList"
+		if (this.conflictBetweenOperations(op)==false) { 
 			operationsList.add(op); //afegeix operació a la llista d'operacions
 		}else {
 			System.out.println("No es possible planificar realitzar 2 operacions sobre un mateix propulsor d'un coet!");
@@ -209,36 +216,26 @@ public class InputManager {
 	 */
 	private void chooseObjectivePower(Operation op) {
 	
-		//boolean correctOperation=false, correctAccelerate, correctBrake;
 		Thruster thruster = op.getThruster();
-		int operation = 0;
 		int objectivePower = 0;
+			
+		if (op instanceof Accelerate) { 
+			// Si la operacio es accelerar, la potencia objectiu ha de ser superior
+			// a la potencia actual i inferior a la potencia maxima del propulsor
+			objectivePower = commons.askInt("Introdueix la potencia objectiu:", thruster.getCurrentPower(), thruster.getMaxPower());
+		} else if (op instanceof Brake){
+			// Si la operacio es frenar, la potencia objectiu ha de ser menor que la potencia actual 
+			// i superior a zero
+			objectivePower = commons.askInt("Introdueix la potencia objectiu:", 0, thruster.getCurrentPower());
+		}
 		
-		//while(correctOperation==false) {
-			
-			if(op instanceof Accelerate) {
-				operation=1;
-			}else {
-				operation=2;
-			}
-			
-			if (operation==1) {
-				objectivePower = commons.askInt("Introdueix la potencia objectiu:", thruster.getCurrentPower(), thruster.getMaxPower());
-			} else if (operation==2){
-				objectivePower = commons.askInt("Introdueix la potencia objectiu:", 0, thruster.getCurrentPower());
-			}
-		/*	
-			correctAccelerate = (objectivePower>=thruster.getCurrentPower() && objectivePower<=thruster.getMaxPower());
-			correctBrake = (objectivePower<=thruster.getCurrentPower() && objectivePower>=0);
-			
-			correctOperation = (operation==1 && correctAccelerate) || (operation==2 && correctBrake);
-		}*/
 		
 		op.setObjectivePower(objectivePower);
 	}
 	
 	/** 
-	 * Mostra totes les operacions planificades per pantalla
+	 * Mostra totes les operacions planificades per pantalla indicant, per a cada operació planificada:
+	 * La operació, el número de propulsor, el codi del coet, la potencia actual i la potencia objectiu
 	 */
 	public void showScheduledOperations() {
 		
@@ -269,7 +266,7 @@ public class InputManager {
 	}
 
 	/**
-	 * no poden haver 2 operacions planificades per a un mateix propulsor
+	 * no poden haver 2 operacions planificades per a un mateix propulsor d'un coet
 	 * retorna true si hi ha aquest conflicte i false en cas contrari
 	 * @param paramOperation
 	 * @return
@@ -293,33 +290,45 @@ public class InputManager {
 		return false;
 	}
 	
+	/**
+	 * Esborra totes les operacions planificades de la llista "operationsList"
+	 */
 	public void removeAllOperations() {
 		this.operationsList.removeAll(this.operationsList);
 		System.out.println("Totes les operacions planificades s'han eliminat correctament.");
 		commons.pause();
 	}
 	
+	/**
+	 * Executa totes les operacions planificades
+	 */
 	public void executeOperations() {
 		
+		//Es crea un objecte de tipus OperationsLauncher i se li passa per paràmetre la llista d'operacions
+		//El constructor de "OperationsLauncher" crearà un Thread per a cada Operació amb les dades
+		//necessàries corresponents que conté la instància de "Operation"
 		OperationsLauncher launcher = new OperationsLauncher(this.operationsList);
 		
 		try {
-			launcher.execute();
+			launcher.execute(); //Executa tots els Threads
 			
-			while (launcher.areAllOperationsFinished()==false) {
+			// Fer que el fil d'execució del programa s'esperi mentre no hagin finalitzat tots els 
+			// Threads ThrusterThreads les seves tasques  
+			while (launcher.areAllOperationsFinished()==false) { 
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1000); //Es fa la comprovació cada 1 segon per no sobrecarregar 
+										//la concurrencia de Threads
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			
-			this.operationsList.removeAll(this.operationsList);
+			this.operationsList.removeAll(this.operationsList); //Esborrar totes les operacions planificades que s'han executat
 			
 			System.out.println("Totes les operacions planificades s'han executat correctament");
 			
 		}finally {
-			launcher.stopAllThreads();
+			launcher.stopAllThreads(); //Tancar tots els Threads
 		}
 		
 		commons.pause();
